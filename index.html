@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>Inteligência Coletiva</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101827;color:white;font-family:Arial,sans-serif}
+header{padding:24px 18px;background:#17243a;text-align:center}
+header h1{font-size:23px;margin:5px}
+header p{color:#b8c5d8;font-size:13px}
+main{max-width:650px;margin:auto;padding:20px}
+.card{background:#1d2b42;border-radius:16px;padding:18px;margin-top:18px}
+textarea{width:100%;height:120px;padding:14px;border:0;border-radius:10px;font-size:16px;resize:vertical}
+button{width:100%;padding:15px;border:0;border-radius:10px;background:#38bdf8;color:#102033;font-weight:bold;font-size:16px;margin-top:12px}
+#resposta{white-space:pre-wrap;line-height:1.6;color:#e3eaf5}
+footer{text-align:center;color:#91a1b8;font-size:12px;padding:25px}
+</style>
+</head>
+<body>
+<header>
+<h1>🧠 Inteligência Coletiva</h1>
+<p>Várias inteligências. Uma construção coletiva.</p>
+</header>
+<main>
+<div class="card">
+<h2>O que vamos analisar hoje?</h2>
+<textarea id="pergunta" placeholder="Digite sua pergunta aqui..."></textarea>
+<button onclick="enviar()">Enviar pergunta</button>
+</div>
+<div class="card">
+<h3>Resposta da Inteligência Coletiva</h3>
+<div id="resposta">Suas respostas aparecerão aqui.</div>
+</div>
+</main>
+<footer>Inteligência Coletiva © 2026</footer>
+<script>
+async function enviar(){
+const pergunta=document.getElementById("pergunta").value.trim();
+const resposta=document.getElementById("resposta");
+if(!pergunta){resposta.textContent="Digite uma pergunta primeiro.";return;}
+resposta.textContent="Analisando sua pergunta...";
+try{
+const r=await fetch("https://SEU-PROJETO.supabase.co/functions/v1/smart-api",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({question:pergunta})
+});
+const dados=await r.json();
+if(!r.ok)throw new Error(dados.error||"Erro ao consultar a IA");
+resposta.textContent=dados.answer||"Não foi recebida uma resposta.";
+}catch(e){
+resposta.textContent="Erro de conexão: "+e.message;
+}
+}
+</script>
+</body>
+</html>
