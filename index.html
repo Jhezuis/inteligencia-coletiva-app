@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,57 +5,321 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#101827">
 <title>Inteligência Coletiva</title>
-<link rel="manifest" href="manifest.json">
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#101827;color:white;font-family:Arial,sans-serif}
-header{padding:24px 18px;background:#17243a;text-align:center}
-header h1{font-size:23px;margin:5px}
-header p{color:#b8c5d8;font-size:13px}
-main{max-width:650px;margin:auto;padding:20px}
-.card{background:#1d2b42;border-radius:16px;padding:18px;margin-top:18px}
-textarea{width:100%;height:120px;padding:14px;border:0;border-radius:10px;font-size:16px;resize:vertical}
-button{width:100%;padding:15px;border:0;border-radius:10px;background:#38bdf8;color:#102033;font-weight:bold;font-size:16px;margin-top:12px}
-#resposta{white-space:pre-wrap;line-height:1.6;color:#e3eaf5}
-footer{text-align:center;color:#91a1b8;font-size:12px;padding:25px}
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  background:#101827;
+  color:white;
+  font-family:Arial,sans-serif;
+}
+
+header {
+  padding:22px 16px;
+  background:#17243a;
+  text-align:center;
+  border-bottom:1px solid #30415b;
+}
+
+header h1 { margin:0; font-size:24px; }
+header p { color:#aabbd1; font-size:13px; }
+
+main {
+  max-width:750px;
+  margin:auto;
+  padding:16px;
+}
+
+.intro {
+  padding:18px;
+  background:#1d2b42;
+  border-radius:15px;
+  margin-bottom:15px;
+}
+
+.intro h2 { margin-top:0; }
+
+.suggestions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.suggestions button {
+  width:auto;
+  margin:0;
+  padding:9px 12px;
+  background:#263b58;
+  color:white;
+  font-size:12px;
+}
+
+#chat {
+  min-height:280px;
+  max-height:55vh;
+  overflow-y:auto;
+  padding:12px;
+  background:#17243a;
+  border-radius:15px;
+}
+
+.message {
+  padding:13px;
+  margin:10px 0;
+  border-radius:12px;
+  line-height:1.6;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+
+.user {
+  background:#075985;
+  margin-left:12%;
+}
+
+.ai {
+  background:#26364d;
+  margin-right:8%;
+}
+
+#status {
+  color:#38bdf8;
+  font-size:13px;
+  padding:10px;
+}
+
+.composer {
+  margin-top:14px;
+  padding:14px;
+  background:#1d2b42;
+  border-radius:15px;
+}
+
+textarea {
+  width:100%;
+  height:95px;
+  resize:vertical;
+  border:0;
+  outline:none;
+  border-radius:10px;
+  padding:13px;
+  font-size:16px;
+  background:#f1f5f9;
+  color:#111827;
+}
+
+button {
+  border:0;
+  border-radius:10px;
+  padding:13px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+#send {
+  width:100%;
+  margin-top:10px;
+  background:#38bdf8;
+  color:#102033;
+  font-size:16px;
+}
+
+#clear {
+  margin-top:12px;
+  background:#34445b;
+  color:white;
+}
+
+button:disabled { opacity:.5; }
+
+footer {
+  text-align:center;
+  color:#91a1b8;
+  font-size:12px;
+  padding:25px;
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>🧠 Inteligência Coletiva</h1>
-<p>Várias inteligências. Uma construção coletiva.</p>
+  <h1>🧠 Inteligência Coletiva</h1>
+  <p>Várias inteligências. Uma construção coletiva.</p>
 </header>
+
 <main>
-<div class="card">
-<h2>O que vamos analisar hoje?</h2>
-<textarea id="pergunta" placeholder="Digite sua pergunta aqui..."></textarea>
-<button onclick="enviar()">Enviar pergunta</button>
-</div>
-<div class="card">
-<h3>Resposta da Inteligência Coletiva</h3>
-<div id="resposta">Suas respostas aparecerão aqui.</div>
-</div>
+
+<section class="intro">
+  <h2>Transforme ideias em oportunidades.</h2>
+  <p>
+    Uma inteligência dedicada a ajudar pessoas a desenvolver
+    ideias, encontrar oportunidades de renda e construir negócios.
+  </p>
+
+  <div class="suggestions">
+    <button onclick="sugerir('Como posso começar a ganhar dinheiro com pouco investimento?')">
+      Ganhar dinheiro
+    </button>
+    <button onclick="sugerir('Quais pequenos negócios posso começar com pouco dinheiro?')">
+      Criar um negócio
+    </button>
+    <button onclick="sugerir('Crie um plano para conseguir minha primeira renda pela internet.')">
+      Renda online
+    </button>
+  </div>
+</section>
+
+<section id="chat" aria-live="polite">
+  <div class="message ai">
+    Olá! Sou a Inteligência Coletiva.
+
+    Vamos transformar conhecimento em oportunidades reais.
+
+    O que você gostaria de construir hoje?
+  </div>
+</section>
+
+<div id="status"></div>
+
+<section class="composer">
+  <textarea id="pergunta"
+    placeholder="Digite sua ideia ou pergunta..."
+    onkeydown="atalho(event)"></textarea>
+
+  <button id="send" onclick="enviar()">
+    Enviar mensagem
+  </button>
+
+  <button id="clear" onclick="limpar()">
+    Nova conversa
+  </button>
+</section>
+
 </main>
-<footer>Inteligência Coletiva © 2026</footer>
+
+<footer>
+  Inteligência Coletiva © 2026
+  <br>
+  Conhecimento compartilhado. Oportunidades construídas.
+</footer>
+
 <script>
-async function enviar(){
-const pergunta=document.getElementById("pergunta").value.trim();
-const resposta=document.getElementById("resposta");
-if(!pergunta){resposta.textContent="Digite uma pergunta primeiro.";return;}
-resposta.textContent="Analisando sua pergunta...";
-try{
-const r=await fetch("https://mnbwfmqgaejhfkghqsop.supabase.co/functions/v1/smart-api",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({question:pergunta})
-});
-const dados=await r.json();
-if(!r.ok)throw new Error(dados.error||"Erro ao consultar a IA");
-resposta.textContent=dados.answer||"Não foi recebida uma resposta.";
-}catch(e){
-resposta.textContent="Erro de conexão: "+e.message;
+const API =
+"https://mnbwfmqgaejhfkghqsop.supabase.co/functions/v1/smart-api";
+
+const chat = document.getElementById("chat");
+const pergunta = document.getElementById("pergunta");
+const statusEl = document.getElementById("status");
+const send = document.getElementById("send");
+
+let historico = [];
+let ocupado = false;
+
+function mensagem(texto, tipo) {
+  const div = document.createElement("div");
+  div.className = "message " + tipo;
+  div.textContent = texto;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
 }
+
+function sugerir(texto) {
+  pergunta.value = texto;
+  enviar();
+}
+
+function atalho(event) {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    enviar();
+  }
+}
+
+async function enviar() {
+  const texto = pergunta.value.trim();
+
+  if (!texto || ocupado) return;
+
+  ocupado = true;
+  send.disabled = true;
+
+  pergunta.value = "";
+  mensagem(texto, "user");
+
+  statusEl.textContent = "Inteligência Coletiva analisando...";
+
+  const contexto = historico.slice(-8).map(item =>
+    (item.role === "user" ? "Pessoa: " : "Inteligência: ") +
+    item.content
+  ).join("\n\n");
+
+  const question = contexto
+    ? "CONTEXTO DA CONVERSA ANTERIOR:\n" +
+      contexto +
+      "\n\nNOVA MENSAGEM:\n" + texto
+    : texto;
+
+  try {
+    const resposta = await fetch(API, {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        question:question
+      })
+    });
+
+    const dados = await resposta.json();
+
+    if (!resposta.ok) {
+      throw new Error(dados.error || "Erro ao consultar a inteligência.");
+    }
+
+    const resultado = dados.answer ||
+      dados.responses?.gemini?.answer ||
+      dados.responses?.groq?.answer ||
+      "Não foi recebida uma resposta válida.";
+
+    mensagem(resultado, "ai");
+
+    historico.push(
+      {role:"user", content:texto},
+      {role:"assistant", content:resultado}
+    );
+
+    historico = historico.slice(-16);
+
+  } catch (erro) {
+    mensagem(
+      "Não consegui concluir sua solicitação.\n" +
+      erro.message +
+      "\nTente novamente.",
+      "ai"
+    );
+  } finally {
+    ocupado = false;
+    send.disabled = false;
+    statusEl.textContent = "";
+    pergunta.focus();
+  }
+}
+
+function limpar() {
+  if (ocupado) return;
+
+  historico = [];
+  chat.innerHTML = "";
+
+  mensagem(
+    "Nova conversa iniciada! Qual oportunidade vamos explorar hoje?",
+    "ai"
+  );
 }
 </script>
+
 </body>
 </html>
