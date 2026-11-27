@@ -45,7 +45,7 @@ const resposta=document.getElementById("resposta");
 if(!pergunta){resposta.textContent="Digite uma pergunta primeiro.";return;}
 resposta.textContent="Analisando sua pergunta...";
 try{
-const r=await fetch("https://SEU-PROJETO.supabase.co/functions/v1/smart-api",{
+const r=await fetch("https://mnbwfmqgaejhfkghqsop.supabase.co/functions/v1/smart-api",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({question:pergunta})
