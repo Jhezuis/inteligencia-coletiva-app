@@ -279,7 +279,8 @@ async function enviar() {
       throw new Error(dados.error || "Erro ao consultar a inteligência.");
     }
 
-    const resultado = dados.answer ||
+    const resultado = dados.synthesis ||
+      dados.answer ||
       dados.responses?.gemini?.answer ||
       dados.responses?.groq?.answer ||
       "Não foi recebida uma resposta válida.";
